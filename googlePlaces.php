@@ -6,7 +6,7 @@ class googlePlaces {
 
 	public $_outputType = 'json'; //either json, xml or array
 	public $_errors = array();
-		
+
 	private $_apiKey = '';
     private $_apiUrl = 'https://maps.googleapis.com/maps/api/place';
     private $_apiCallType = '';
@@ -26,6 +26,9 @@ class googlePlaces {
     private $_accuracy;
     private $_pageToken;
     private $_curloptSslVerifypeer = true; // option CURLOPT_SSL_VERIFYPEER with true value working not always
+    private $_photoReference;
+    private $_maxWidth;
+    private $_maxHeight;
 
     /**
      * constructor - creates a googlePlaces object with the specified API Key
@@ -33,7 +36,7 @@ class googlePlaces {
      * @param $apiKey - the API Key to use
      */
 	public function __construct($apiKey) {
-		$this->_apiKey = $apiKey;	
+		$this->_apiKey = $apiKey;
 	}
 
     // for backward compatibility
@@ -66,9 +69,15 @@ class googlePlaces {
 
 	public function details() {
 		$this->_apiCallType = googlePlacesCallType::DETAILS_SEARCH;
-		
+
 		return $this->_executeAPICall();
 	}
+
+    public function photo() {
+        $this->_apiCallType = googlePlacesCallType::PHOTO_SEARCH;
+
+        return $this->_executeAPICall();
+    }
 
 	public function checkIn() {
 		$this->_apiCallType = googlePlacesCallType::CHECKIN;
@@ -264,6 +273,19 @@ class googlePlaces {
                 $parameterString = 'radius='.$this->_radius . '&sensor=' . $this->_sensor . '&pagetoken=' . $this->_pageToken;
                 $this->_apiCallType = 'search';
                 break;
+
+            case(googlePlacesCallType::PHOTO_SEARCH):
+                $parameterString = 'reference=' . $this->_photoReference . '&sensor=' . $this->_sensor;
+
+                if ($this->_maxWidth) {
+                    $parameterString .= '&maxwidth=' . $this->_maxWidth;
+                }
+
+                if ($this->_maxWidth) {
+                    $parameterString .= '&maxheight=' . $this->_maxHeight;
+                }
+
+                break;
         }
 
         return $parameterString;
@@ -347,6 +369,21 @@ class googlePlaces {
     public function setCurloptSslVerifypeer($curloptSslVerifypeer) {
         $this->_curloptSslVerifypeer = $curloptSslVerifypeer;
     }
+
+    public function setPhotoReference($photoReference)
+    {
+        $this->_photoReference = $photoReference;
+    }
+
+    public function setMaxWidth($maxWidth)
+    {
+        $this->_maxWidth = $maxWidth;
+    }
+
+    public function setMaxHeight($maxHeight)
+    {
+        $this->_maxHeight = $maxHeight;
+    }
 }
 
 class googlePlacesCallType{
@@ -355,6 +392,7 @@ class googlePlacesCallType{
     const RADAR_SEARCH = 'radarsearch';
     const TEXT_SEARCH = 'textsearch';
     const DETAILS_SEARCH = 'details';
+    const PHOTO_SEARCH = 'photo';
     const CHECKIN = 'checkin-in';
     const ADD = 'add';
     const DELETE = 'delete';
