@@ -1,0 +1,18 @@
+{
+    "name": "anthony-mills/google-places",
+    "description": "Integrating Google Places API",
+    "minimum-stability": "stable",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Anthony Mills",
+            "email": "me@anthony-mills.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "autoload": {
+        "classmap": ["googlePlaces.php"]
+    }
+}
